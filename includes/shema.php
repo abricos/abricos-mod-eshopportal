@@ -108,6 +108,7 @@ if (Ab_UpdateManager::$isCoreInstall){
 				ЖК (жидко-кристалические) телевизоры  - это отличная передача звука и качества. 
 				Уже давно пора давно забыть об ЭЛТ телевизорах и купить телевизор жк. 
 				В нашем магазине вы сможете подобрать то, что вам нужно. 
+			</p>
 			";
 			$catid = $manCatalog->CatalogAppend($cat);
 				
@@ -174,6 +175,21 @@ if (Ab_UpdateManager::$isCoreInstall){
 			$p->fld_sklad = "4";
 			$p->fld_price = "259.90";
 			$manCatalog->ElementAppend($p);
+			
+			$cat = new stdClass();
+			$cat->img = EshoportalUploadImage(CWD.'/modules/eshopportal/mediasrc/tvkinescope.jpg');
+			$cat->pid = $pcatid;
+			$cat->nm = 'tvkinescope';
+			$cat->tl = 'Кинескопные телевизоры';
+			$cat->ord = $ordwg--;
+			$cat->dsc = "
+			<p>
+				Очень большие и тяжелые телевизоры прошлого века. К тому же потребляют 
+				существенное кол-во электроэнергии. 
+			</p>
+			";
+			$catid = $manCatalog->CatalogAppend($cat);
+				
 			
 			if ($devMode){
 				$pcatid = $pcatid;
