@@ -191,22 +191,27 @@ if (Ab_UpdateManager::$isCoreInstall){
 				
 
 			$catid = EshopportalCatalogAppend($pcatid, 'tvplz', 'Плазменные телевизоры');
+			EshopportalElementAppend($catid, "Плазменный телевизор Panasonic TX-PR42UT30");
 
 			$catid = EshopportalCatalogAppend($pcatid, 'tvled', 'LED телевизоры');
-
+			EshopportalElementAppend($catid, "LED телевизоры Toshiba 26EL833R");
+				
 			$catid = EshopportalCatalogAppend($pcatid, 'tvkinescope', 'Кинескопные телевизоры', "
 				<p>
 					Очень большие и тяжелые телевизоры прошлого века. К тому же потребляют
 					существенное кол-во электроэнергии.
 				</p>
 			");
-
-			$catid = EshopportalCatalogAppend($pcatid, 'tvsat', 'Оборудование для спутникового и цифрового TV');
-			
-			$catid = EshopportalCatalogAppend($pcatid, 'tvstend', 'Кронштейны и TV стенды');
-			
-			$catid = EshopportalCatalogAppend($pcatid, 'tvprop', 'Аксессуары для ТВ');
+			EshopportalElementAppend($catid, "Кинескопный телевизор Supra CTV-14011");
 				
+			$catid = EshopportalCatalogAppend($pcatid, 'tvsat', 'Оборудование для спутникового и цифрового TV');
+			EshopportalElementAppend($catid, "Комплект цифрового ТВ \"Vipr\" 6 месяцев");
+
+			$catid = EshopportalCatalogAppend($pcatid, 'tvstend', 'Кронштейны и TV стенды');
+			EshopportalElementAppend($catid, "TV стенд Holder LCDS - 5039");
+				
+			$catid = EshopportalCatalogAppend($pcatid, 'tvprop', 'Аксессуары для ТВ');
+			EshopportalElementAppend($catid, "Philips SWV1431CN/10");
 		
 			// Крупная бытовая техника
 			$pcatid = EshopportalCatalogAppend(0, 'bbtec', 'Крупная бытовая техника', "
@@ -231,241 +236,8 @@ if (Ab_UpdateManager::$isCoreInstall){
 			$catid = EshopportalCatalogAppend($pcatid, 'pctecmonlcd', 'ЖК-мониторы');
 				
 			if ($devMode){
-				$cat = new stdClass();
-				$cat->ord = $ordwg--;
-				$cat->nm = 'razdel1';
-				$cat->tl = 'Раздел №1';
-				$cat->dsc = "";
-				$pcatid = $manCatalog->CatalogAppend($cat);
-				
-				// Подраздел
-				$cat = new stdClass();
-				$cat->ord = $ordwg--;
-				$cat->pid = $pcatid;
-				$cat->nm = 'porazdel11';
-				$cat->tl = 'Подраздел №1 Р1';
-				$cat->dsc = "";
-				$catid = $manCatalog->CatalogAppend($cat);
-				
-				
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар №2 Р1";
-				$p->fld_art = "8546812";
-				$p->fld_sklad = "7";
-				$p->fld_price = "1500.75";
-				$manCatalog->ElementAppend($p);
-				
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар №3 Р1";
-				$p->fld_art = "8546813";
-				$p->fld_sklad = "0";
-				$p->fld_price = "399.90";
-				$manCatalog->ElementAppend($p);
-				
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар №4 Р1";
-				$p->fld_art = "8546814";
-				$p->fld_sklad = "4";
-				$p->fld_price = "259.90";
-				$manCatalog->ElementAppend($p);
-				
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "№5 Р1";
-				$p->fld_art = "8546815";
-				$p->fld_sklad = "9";
-				$p->fld_price = "59.90";
-				$manCatalog->ElementAppend($p);
-					
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар №6 Р1";
-				$p->fld_art = "8546816";
-				$p->fld_sklad = "4";
-				$p->fld_price = "259.90";
-				$manCatalog->ElementAppend($p);
-					
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар №7 Р1";
-				$p->fld_art = "8546817";
-				$p->fld_sklad = "0";
-				$p->fld_price = "399.90";
-				$manCatalog->ElementAppend($p);
-					
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар №8 Р1";
-				$p->fld_art = "8546818";
-				$p->fld_sklad = "4";
-				$p->fld_price = "259.90";
-				$manCatalog->ElementAppend($p);
-				
-				
-				// Подраздел
-				$cat = new stdClass();
-				$cat->pid = $pcatid;
-				$cat->nm = 'porazdel11';
-				$cat->tl = 'Подаздел №1 Р1';
-				$cat->dsc = "";
-				$catid = $manCatalog->CatalogAppend($cat);
-				
-				// Товары подраздела
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар №1 П1 Р1";
-				$p->fld_art = "8546811";
-				$p->fld_sklad = "15";
-				$p->fld_price = "1700";
-				$manCatalog->ElementAppend($p);
-				
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар №2 П1 Р1";
-				$p->fld_art = "8546812";
-				$p->fld_sklad = "7";
-				$p->fld_price = "1500.75";
-				$manCatalog->ElementAppend($p);
-				
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар №3 П1 Р1";
-				$p->fld_art = "8546813";
-				$p->fld_sklad = "0";
-				$p->fld_price = "399.90";
-				$manCatalog->ElementAppend($p);
-				
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар №4 П1 Р1";
-				$p->fld_art = "8546814";
-				$p->fld_sklad = "4";
-				$p->fld_price = "259.90";
-				$manCatalog->ElementAppend($p);
-				
-				// Раздел 12
-				$cat = new stdClass();
-				$cat->pid = $pcatid;
-				$cat->nm = 'razdel12';
-				$cat->tl = 'Подаздел №2 Р1';
-				$cat->dsc = "";
-				$catid = $manCatalog->CatalogAppend($cat);
-				
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар №1 П2 Р1";
-				$p->fld_art = "8546813";
-				$p->fld_sklad = "0";
-				$p->fld_price = "399.90";
-				$manCatalog->ElementAppend($p);
-				
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар №2 П2 Р1";
-				$p->fld_art = "8546814";
-				$p->fld_sklad = "4";
-				$p->fld_price = "259.90";
-				$manCatalog->ElementAppend($p);
-				
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар №2 П2 Р1";
-				$p->fld_art = "8546814";
-				$p->fld_sklad = "4";
-				$p->fld_price = "259.90";
-				$manCatalog->ElementAppend($p);
-				
-				// Раздел 13
-				$cat = new stdClass();
-				$cat->pid = $pcatid;
-				$cat->nm = 'razdel13';
-				$cat->tl = 'Подаздел №3 Р1';
-				$cat->dsc = "";
-				$catid = $manCatalog->CatalogAppend($cat);
-
-				// Раздел 14
-				$cat = new stdClass();
-				$cat->pid = $pcatid;
-				$cat->nm = 'razdel14';
-				$cat->tl = 'Подаздел №4 Р1';
-				$cat->dsc = "";
-				$catid = $manCatalog->CatalogAppend($cat);
-				
-				
-				// Раздел 2
-				$cat = new stdClass();
-				$cat->ord = $ordwg--;
-				$cat->nm = 'razdel2';
-				$cat->tl = 'Раздел №2';
-				$cat->dsc = "
-				<p>
-					Новинки нашего интернет-магазина в в разделе 2.
-				</p>
-				";
-				$catid = $manCatalog->CatalogAppend($cat);
-				
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар Р21";
-				$p->fld_art = "8546854";
-				$p->fld_sklad = "0";
-				$p->fld_price = "920.5";
-				$manCatalog->ElementAppend($p);
-					
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар Р22";
-				$p->fld_art = "8546854";
-				$p->fld_sklad = "1";
-				$p->fld_price = "1270.75";
-				$manCatalog->ElementAppend($p);
-					
-				$p = new stdClass();
-				$p->catid = $catid;
-				$p->fld_name = "Товар Р23";
-				$p->fld_art = "8546854";
-				$p->fld_sklad = "28";
-				$p->fld_price = "99.90";
-				$manCatalog->ElementAppend($p);
-				
-
-				$cat = new stdClass();
-				$cat->ord = $ordwg--;
-				$cat->nm = 'razdel3';
-				$cat->tl = 'Раздел №3';
-				$cat->dsc = "
-					<p>
-						Подробное описание раздела номер три каталога продукции 
-						интернет-магазина Абрикос-Шоп.
-					</p>
-				";
-				$catid = $manCatalog->CatalogAppend($cat);
-				
-				$cat = new stdClass();
-				$cat->ord = $ordwg--;
-				$cat->nm = 'razdel4';
-				$cat->tl = 'Раздел №4';
-				$cat->dsc = "
-				<p>
-					Подробное описание раздела номер четыре.
-				</p>
-				";
-				$catid = $manCatalog->CatalogAppend($cat);
-				
-				$cat = new stdClass();
-				$cat->ord = $ordwg--;
-				$cat->nm = 'razdel5';
-				$cat->tl = 'Раздел №5';
-				$cat->dsc = "
-				<p>
-					Подробное описание раздела номер пять.
-				</p>
-				";
-				$catid = $manCatalog->CatalogAppend($cat);
-				
+				// Режим разработчика
+				// сюда можно включить специфичную инсталляцию 
 			}
 		}
 	}
