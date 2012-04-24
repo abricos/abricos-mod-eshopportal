@@ -18,7 +18,7 @@ $pfx = $db->prefix;
 
 function EshoportalUploadImage($file){
 	$modFileManager = Abricos::GetModule('filemanager');
-	if (empty($modFileManager)){ return ''; }
+	if (!file_exists($file) || empty($modFileManager)){ return ''; }
 	
 	$uploadFile = FileManagerModule::$instance->GetManager()->CreateUpload($file);
 	$uploadFile->ignoreUploadRole = true;
@@ -33,6 +33,58 @@ function EshoportalUploadImage($file){
 	}
 	return '';
 }
+
+class EshopportalTempClass {
+	public static $ordw = 1000;
+}
+
+function EshopportalCatalogAppend($parentid, $name, $title, $desc = ''){
+	$cat = new stdClass();
+	$cat->nm = $name;
+	$cat->tl = $title;
+	$cat->pid = $parentid;
+	$cat->ord = EshopportalTempClass::$ordw--;
+	$cat->img = EshoportalUploadImage(CWD.'/modules/eshopportal/mediasrc/'.$name.'.jpg');
+	$cat->dsc = $desc;
+	$manCatalog = EShopModule::$instance->GetCatalogManager();
+	return $manCatalog->CatalogAppend($cat);
+}
+
+function EshopportalElementAppend($catid, $title, $imgs = "", $desc = '', $articul = '', $count = 0, $price = 0){
+	$p = new stdClass();
+	
+	$p->catid = $catid;
+	$p->fld_name = $title;
+	$p->fld_art = rand(100000, 999999);
+	$p->fld_sklad = rand(0, 50);
+	$p->fld_price = rand (100, 10000)+rand (0, 99)*0.1;
+	$manCatalog = EShopModule::$instance->GetCatalogManager();
+	
+
+	$elid = $manCatalog->ElementAppend($p);
+	
+	if (empty($elid)){ return 0; }
+	
+	if (is_string($imgs)){
+		$imgs = explode(",", $imgs);
+	}
+	if (is_array($imgs)){
+		print_r($imgs);
+		$afids = array();
+		foreach ($imgs as $img){
+			$fid = EshoportalUploadImage(CWD.'/modules/eshopportal/mediasrc/'.$img.'.jpg');
+			if (!empty($fid)){
+				array_push($afids, $fid);
+			}
+		}
+		if (count($afids)>0){
+			CatalogQuery::FotoAppend(Abricos::$db, $elid, $afids);
+		}
+	}
+	
+	return $elid;
+}
+
 
 if (Ab_UpdateManager::$isCoreInstall){ 
 	// разворачиваем коробку при инсталляции платформы
@@ -83,116 +135,138 @@ if (Ab_UpdateManager::$isCoreInstall){
 			
 			$ordwg = 100;
 			
-			$cat = new stdClass();
-			$cat->img = EshoportalUploadImage(CWD.'/modules/eshopportal/mediasrc/tv.jpg');
-			$cat->nm = 'tv';
-			$cat->tl = 'Телевизоры';
-			$cat->ord = $ordwg--;
-			$cat->dsc = "
+			// Телевизоры
+			$pcatid = EshopportalCatalogAppend(0, 'tv', 'Телевизоры', "
 				<p>
 					В магазине бытовой техники и электроники Абрикос-Show Вы можете приобрести 
 					телевизор онлайн, подобрав модель телевизора на свой вкус и в зависимости от 
 					потребностей.
  				</p>
-			";
-			$pcatid = $manCatalog->CatalogAppend($cat);
+			");
 
-			$cat = new stdClass();
-			$cat->img = EshoportalUploadImage(CWD.'/modules/eshopportal/mediasrc/tvlcd.jpg');
-			$cat->pid = $pcatid;
-			$cat->nm = 'tvlcd';
-			$cat->tl = 'ЖК-телевизоры';
-			$cat->ord = $ordwg--;
-			$cat->dsc = "
-			<p>
-				ЖК (жидко-кристалические) телевизоры  - это отличная передача звука и качества. 
-				Уже давно пора давно забыть об ЭЛТ телевизорах и купить телевизор жк. 
-				В нашем магазине вы сможете подобрать то, что вам нужно. 
-			</p>
-			";
-			$catid = $manCatalog->CatalogAppend($cat);
+			$catid = EshopportalCatalogAppend($pcatid, 'tvlcd', 'ЖК-телевизоры', "
+				<p>
+					ЖК (жидко-кристалические) телевизоры  - это отличная передача звука и качества. 
+					Уже давно пора давно забыть об ЭЛТ телевизорах и купить телевизор жк. 
+					В нашем магазине вы сможете подобрать то, что вам нужно. 
+				</p>
+			");
+			EshopportalElementAppend($catid, "ЖК-телевизор Philips 19PFL3606H/60", "tvlcd001-1,tvlcd001-2,tvlcd001-3,tvlcd001-4,tvlcd001-5,tvlcd001-6");
+			
+			$catid = EshopportalCatalogAppend($pcatid, 'tvplz', 'Плазменные телевизоры');
+
+			$catid = EshopportalCatalogAppend($pcatid, 'tvled', 'LED телевизоры');
+
+			$catid = EshopportalCatalogAppend($pcatid, 'tvkinescope', 'Кинескопные телевизоры', "
+				<p>
+					Очень большие и тяжелые телевизоры прошлого века. К тому же потребляют
+					существенное кол-во электроэнергии.
+				</p>
+			");
+
+			$catid = EshopportalCatalogAppend($pcatid, 'tvsat', 'Оборудование для спутникового и цифрового TV');
+			
+			$catid = EshopportalCatalogAppend($pcatid, 'tvstend', 'Кронштейны и TV стенды');
+			
+			$catid = EshopportalCatalogAppend($pcatid, 'tvprop', 'Аксессуары для ТВ');
 				
-			$p = new stdClass();
-			$p->catid = $catid;
-			$p->fld_name = "ЖК-телевизор Philips 19PFL3606H/60";
-			$p->fld_art = "8546811";
-			$p->fld_sklad = "3";
-			$p->fld_price = "7230";
-			$manCatalog->ElementAppend($p);
+		
+			// Крупная бытовая техника
+			$pcatid = EshopportalCatalogAppend(0, 'bbtec', 'Крупная бытовая техника', "
+				<p>
+					Крупная бытовая техника делает нашу жизнь проще, экономя наше время, силы. 
+					Современные нновационные технологии применяемые в бытовой техники сохраняет 
+					окружающую среду и наше здоровье. 
+				</p>
+			");
 
-			$p = new stdClass();
-			$p->catid = $catid;
-			$p->fld_name = "Товар №2 Р1";
-			$p->fld_art = "8546812";
-			$p->fld_sklad = "7";
-			$p->fld_price = "1500.75";
-			$manCatalog->ElementAppend($p);
-
-			$p = new stdClass();
-			$p->catid = $catid;
-			$p->fld_name = "Товар №3 Р1";
-			$p->fld_art = "8546813";
-			$p->fld_sklad = "0";
-			$p->fld_price = "399.90";
-			$manCatalog->ElementAppend($p);
-
-			$p = new stdClass();
-			$p->catid = $catid;
-			$p->fld_name = "Товар №4 Р1";
-			$p->fld_art = "8546814";
-			$p->fld_sklad = "4";
-			$p->fld_price = "259.90";
-			$manCatalog->ElementAppend($p);
-
-			$p = new stdClass();
-			$p->catid = $catid;
-			$p->fld_name = "№5 Р1";
-			$p->fld_art = "8546815";
-			$p->fld_sklad = "9";
-			$p->fld_price = "59.90";
-			$manCatalog->ElementAppend($p);
-			
-			$p = new stdClass();
-			$p->catid = $catid;
-			$p->fld_name = "Товар №6 Р1";
-			$p->fld_art = "8546816";
-			$p->fld_sklad = "4";
-			$p->fld_price = "259.90";
-			$manCatalog->ElementAppend($p);
-			
-			$p = new stdClass();
-			$p->catid = $catid;
-			$p->fld_name = "Товар №7 Р1";
-			$p->fld_art = "8546817";
-			$p->fld_sklad = "0";
-			$p->fld_price = "399.90";
-			$manCatalog->ElementAppend($p);
-			
-			$p = new stdClass();
-			$p->catid = $catid;
-			$p->fld_name = "Товар №8 Р1";
-			$p->fld_art = "8546818";
-			$p->fld_sklad = "4";
-			$p->fld_price = "259.90";
-			$manCatalog->ElementAppend($p);
-			
-			$cat = new stdClass();
-			$cat->img = EshoportalUploadImage(CWD.'/modules/eshopportal/mediasrc/tvkinescope.jpg');
-			$cat->pid = $pcatid;
-			$cat->nm = 'tvkinescope';
-			$cat->tl = 'Кинескопные телевизоры';
-			$cat->ord = $ordwg--;
-			$cat->dsc = "
-			<p>
-				Очень большие и тяжелые телевизоры прошлого века. К тому же потребляют 
-				существенное кол-во электроэнергии. 
-			</p>
-			";
-			$catid = $manCatalog->CatalogAppend($cat);
+			$catid = EshopportalCatalogAppend($pcatid, 'bbtecholod', 'Холодильники');
+			$catid = EshopportalCatalogAppend($pcatid, 'bbtecmoroz', 'Морозильные камеры');
+			$catid = EshopportalCatalogAppend($pcatid, 'bbtecstirka', 'Стиральные машины');
 				
-			
+
+			// Компьютеры
+			$pcatid = EshopportalCatalogAppend(0, 'pctec', 'Компьютерная техника');
+			$catid = EshopportalCatalogAppend($pcatid, 'pctecpc', 'Компьютеры');
+			$catid = EshopportalCatalogAppend($pcatid, 'pctecnout', 'Ноутбуки');
+			$catid = EshopportalCatalogAppend($pcatid, 'pctecprint', 'Принтеры');
+			$catid = EshopportalCatalogAppend($pcatid, 'pctecscan', 'Сканеры');
+			$catid = EshopportalCatalogAppend($pcatid, 'pctecmonlcd', 'ЖК-мониторы');
+				
 			if ($devMode){
-				$pcatid = $pcatid;
+				$cat = new stdClass();
+				$cat->ord = $ordwg--;
+				$cat->nm = 'razdel1';
+				$cat->tl = 'Раздел №1';
+				$cat->dsc = "";
+				$pcatid = $manCatalog->CatalogAppend($cat);
+				
+				// Подраздел
+				$cat = new stdClass();
+				$cat->ord = $ordwg--;
+				$cat->pid = $pcatid;
+				$cat->nm = 'porazdel11';
+				$cat->tl = 'Подраздел №1 Р1';
+				$cat->dsc = "";
+				$catid = $manCatalog->CatalogAppend($cat);
+				
+				
+				$p = new stdClass();
+				$p->catid = $catid;
+				$p->fld_name = "Товар №2 Р1";
+				$p->fld_art = "8546812";
+				$p->fld_sklad = "7";
+				$p->fld_price = "1500.75";
+				$manCatalog->ElementAppend($p);
+				
+				$p = new stdClass();
+				$p->catid = $catid;
+				$p->fld_name = "Товар №3 Р1";
+				$p->fld_art = "8546813";
+				$p->fld_sklad = "0";
+				$p->fld_price = "399.90";
+				$manCatalog->ElementAppend($p);
+				
+				$p = new stdClass();
+				$p->catid = $catid;
+				$p->fld_name = "Товар №4 Р1";
+				$p->fld_art = "8546814";
+				$p->fld_sklad = "4";
+				$p->fld_price = "259.90";
+				$manCatalog->ElementAppend($p);
+				
+				$p = new stdClass();
+				$p->catid = $catid;
+				$p->fld_name = "№5 Р1";
+				$p->fld_art = "8546815";
+				$p->fld_sklad = "9";
+				$p->fld_price = "59.90";
+				$manCatalog->ElementAppend($p);
+					
+				$p = new stdClass();
+				$p->catid = $catid;
+				$p->fld_name = "Товар №6 Р1";
+				$p->fld_art = "8546816";
+				$p->fld_sklad = "4";
+				$p->fld_price = "259.90";
+				$manCatalog->ElementAppend($p);
+					
+				$p = new stdClass();
+				$p->catid = $catid;
+				$p->fld_name = "Товар №7 Р1";
+				$p->fld_art = "8546817";
+				$p->fld_sklad = "0";
+				$p->fld_price = "399.90";
+				$manCatalog->ElementAppend($p);
+					
+				$p = new stdClass();
+				$p->catid = $catid;
+				$p->fld_name = "Товар №8 Р1";
+				$p->fld_art = "8546818";
+				$p->fld_sklad = "4";
+				$p->fld_price = "259.90";
+				$manCatalog->ElementAppend($p);
+				
 				
 				// Подраздел
 				$cat = new stdClass();
@@ -282,46 +356,45 @@ if (Ab_UpdateManager::$isCoreInstall){
 				$cat->tl = 'Подаздел №4 Р1';
 				$cat->dsc = "";
 				$catid = $manCatalog->CatalogAppend($cat);
-			}
-			
-			// Раздел 2
-			$cat = new stdClass();
-			$cat->ord = $ordwg--;
-			$cat->nm = 'razdel2';
-			$cat->tl = 'Раздел №2';
-			$cat->dsc = "
+				
+				
+				// Раздел 2
+				$cat = new stdClass();
+				$cat->ord = $ordwg--;
+				$cat->nm = 'razdel2';
+				$cat->tl = 'Раздел №2';
+				$cat->dsc = "
 				<p>
 					Новинки нашего интернет-магазина в в разделе 2.
 				</p>
-			";
-			$catid = $manCatalog->CatalogAppend($cat);
+				";
+				$catid = $manCatalog->CatalogAppend($cat);
 				
-			$p = new stdClass();
-			$p->catid = $catid;
-			$p->fld_name = "Товар Р21";
-			$p->fld_art = "8546854";
-			$p->fld_sklad = "0";
-			$p->fld_price = "920.5";
-			$manCatalog->ElementAppend($p);
-			
-			$p = new stdClass();
-			$p->catid = $catid;
-			$p->fld_name = "Товар Р22";
-			$p->fld_art = "8546854";
-			$p->fld_sklad = "1";
-			$p->fld_price = "1270.75";
-			$manCatalog->ElementAppend($p);
-			
-			$p = new stdClass();
-			$p->catid = $catid;
-			$p->fld_name = "Товар Р23";
-			$p->fld_art = "8546854";
-			$p->fld_sklad = "28";
-			$p->fld_price = "99.90";
-			$manCatalog->ElementAppend($p);
-			
-			
-			if ($devMode){
+				$p = new stdClass();
+				$p->catid = $catid;
+				$p->fld_name = "Товар Р21";
+				$p->fld_art = "8546854";
+				$p->fld_sklad = "0";
+				$p->fld_price = "920.5";
+				$manCatalog->ElementAppend($p);
+					
+				$p = new stdClass();
+				$p->catid = $catid;
+				$p->fld_name = "Товар Р22";
+				$p->fld_art = "8546854";
+				$p->fld_sklad = "1";
+				$p->fld_price = "1270.75";
+				$manCatalog->ElementAppend($p);
+					
+				$p = new stdClass();
+				$p->catid = $catid;
+				$p->fld_name = "Товар Р23";
+				$p->fld_art = "8546854";
+				$p->fld_sklad = "28";
+				$p->fld_price = "99.90";
+				$manCatalog->ElementAppend($p);
+				
+
 				$cat = new stdClass();
 				$cat->ord = $ordwg--;
 				$cat->nm = 'razdel3';
