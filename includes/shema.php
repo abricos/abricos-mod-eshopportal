@@ -50,7 +50,7 @@ function EshopportalCatalogAppend($parentid, $name, $title, $desc = ''){
 	return $manCatalog->CatalogAppend($cat);
 }
 
-function EshopportalElementAppend($catid, $title, $imgs = "", $desc = '', $articul = '', $count = 0, $price = 0){
+function EshopportalElementAppend($catid, $title, $imgs="", $desc='', $overfld = array()){
 	$p = new stdClass();
 	
 	$p->catid = $catid;
@@ -58,6 +58,15 @@ function EshopportalElementAppend($catid, $title, $imgs = "", $desc = '', $artic
 	$p->fld_art = rand(100000, 999999);
 	$p->fld_sklad = rand(0, 50);
 	$p->fld_price = rand (100, 10000)+rand (0, 99)*0.1;
+	$p->fld_desc = $desc;
+	
+	if (is_array($overfld) && count($overfld)>0){
+		foreach($overfld as $fld => $val){
+			$fname = "fld_".$fld;
+			$p->$fname = $val;
+		}
+	}
+	
 	$manCatalog = EShopModule::$instance->GetCatalogManager();
 	
 
@@ -69,7 +78,6 @@ function EshopportalElementAppend($catid, $title, $imgs = "", $desc = '', $artic
 		$imgs = explode(",", $imgs);
 	}
 	if (is_array($imgs)){
-		print_r($imgs);
 		$afids = array();
 		foreach ($imgs as $img){
 			$fid = EshoportalUploadImage(CWD.'/modules/eshopportal/mediasrc/'.$img.'.jpg');
@@ -151,8 +159,37 @@ if (Ab_UpdateManager::$isCoreInstall){
 					В нашем магазине вы сможете подобрать то, что вам нужно. 
 				</p>
 			");
-			EshopportalElementAppend($catid, "ЖК-телевизор Philips 19PFL3606H/60", "tvlcd001-1,tvlcd001-2,tvlcd001-3,tvlcd001-4,tvlcd001-5,tvlcd001-6");
-			
+			EshopportalElementAppend($catid, "ЖК-телевизор Philips 19PFL3606H/60", "tvlcd001-1,tvlcd001-2,tvlcd001-3,tvlcd001-4,tvlcd001-5,tvlcd001-6", "
+				<p>
+					С Philips вы можете наслаждаться великолепным качеством телевизора по разумной цене — сегодня и всегда. 
+					Этот ЖК-телевизор модели 19PFL3606 серии 3000 обеспечивает высокое качество изображения, имеет удобные 
+					разъемы для цифрового подключения и отличается прекрасным дизайном.
+				</p>
+			");
+			EshopportalElementAppend($catid, "ЖК-телевизор Samsung LE-19D450G1W", "tvlcd002-1", "
+				<p>
+					Видео:<br>- Разрешение: 1366 x 768<br>- Технология 50 Clear Motion Rate<br>
+					- Процессор: DNIe+ Picture Engine (высокий контраст)<br>
+					- Технология Широкоуг. Color Enhancer Plus A8123 (Улучшение цвета)<br>
+					Звук:<br>- Dolby Digital Plus, Dolby Pulse<br>- Звук: SRS Theater Sound<br>
+					- DTS 2.0 + цифровой выход<br>Особенности:<br>- AnyNet+ HDMI-CEC <br>
+					- Автопоиск каналов<br>- Гид по программам (EPG)<br>- Телетекст (TTXT) <br>
+					- Язык меню (29 европейских языков)<br>- Автоконтроль уровня громкость (AVL)<br>
+					- Автовыключение питания<br>- Часы<br>- Игровой режим <br>- Режим \"Картинка-в-картинке\" (1 тюнер PIP)<br>
+					Интерфейсы:<br>- HDMI<br>- USB <br>- Компонентный вход (Y/Pb/Pr)<br>
+					- Компонентный вход (Y/Pb/Pr) 1 (для Component Y)<br>- Цифровой аудиовыход (оптический) x 1 (боковой)<br>
+					- Вход для сигнала с ПК (D-sub)<br>- CI слот<br>- Scart<br>- Наушники<br>- РС Аудиовход (Mini Jack)<br>
+					- DVI аудиовход (Mini Jack) x 1 ( для PC )					
+				</p>
+			");
+			EshopportalElementAppend($catid, "ЖК-телевизор LG 22LK330", "tvlcd003-1", '', array('new'=>1, 'hit'=>1));
+			EshopportalElementAppend($catid, "ЖК-телевизор Toshiba 32LV833RB", "tvlcd004-1");
+			EshopportalElementAppend($catid, "ЖК-телевизор LG 32LD320B", "tvlcd005-1");
+			EshopportalElementAppend($catid, "ЖК-телевизор Philips 56PFL9954H/12", "tvlcd006-1");
+			EshopportalElementAppend($catid, "ЖК-телевизор Samsung LE-37A686M1F", "tvlcd007-1");
+			EshopportalElementAppend($catid, "ЖК-телевизор Philips 47PFL4606H/60");
+				
+
 			$catid = EshopportalCatalogAppend($pcatid, 'tvplz', 'Плазменные телевизоры');
 
 			$catid = EshopportalCatalogAppend($pcatid, 'tvled', 'LED телевизоры');
