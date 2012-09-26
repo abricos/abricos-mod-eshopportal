@@ -18,7 +18,7 @@ class EshopportalModule extends Ab_Module {
 	 * Конструктор
 	 */
 	public function __construct(){
-		$this->version = "0.1";
+		$this->version = "0.1.1";
 		$this->name = "eshopportal";
 	}
 
