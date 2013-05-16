@@ -15,6 +15,8 @@ $updateManager = Ab_UpdateManager::$current;
 $db = Abricos::$db;
 $pfx = $db->prefix;
 
+Abricos::GetModule("eshop")->GetManager();
+EShopManager::$instance->RoleDisable();
 
 function EshoportalUploadImage($file){
 	$modFileManager = Abricos::GetModule('filemanager');
@@ -40,44 +42,23 @@ class EshopportalTempClass {
 
 function EshopportalCatalogAppend($parentid, $name, $title, $desc = ''){
 	$cat = new stdClass();
+	$cat->pid = $parentid;
 	$cat->nm = $name;
 	$cat->tl = $title;
-	$cat->pid = $parentid;
 	$cat->ord = EshopportalTempClass::$ordw--;
-	$cat->img = EshoportalUploadImage(CWD.'/modules/eshopportal/mediasrc/'.$name.'.jpg');
+	$cat->foto = EshoportalUploadImage(CWD.'/modules/eshopportal/mediasrc/'.$name.'.jpg');
 	$cat->dsc = $desc;
-	$manCatalog = EShopModule::$instance->GetCatalogManager();
-	return $manCatalog->CatalogAppend($cat);
+	
+	return EShopManager::$instance->cManager->CatalogSave(0, $cat);
 }
 
 function EshopportalElementAppend($catid, $title, $imgs="", $desc='', $overfld = array()){
 	$p = new stdClass();
 	
-	$p->catid = $catid;
-	$p->fld_name = $title;
-	$p->fld_art = rand(100000, 999999);
-	$p->fld_sklad = rand(0, 50);
-	$p->fld_price = rand (100, 10000)+rand (0, 99)*0.1;
-	$p->fld_desc = $desc;
-	
-	if (is_array($overfld) && count($overfld)>0){
-		foreach($overfld as $fld => $val){
-			$fname = "fld_".$fld;
-			$p->$fname = $val;
-		}
-	}
-	
-	$manCatalog = EShopModule::$instance->GetCatalogManager();
-	
-
-	$elid = $manCatalog->ElementAppend($p);
-	
-	if (empty($elid)){ return 0; }
-	
 	if (is_string($imgs)){
 		$imgs = explode(",", $imgs);
 	}
-	if (is_array($imgs)){
+	if (is_array($imgs) && count($imgs) > 0){
 		$afids = array();
 		foreach ($imgs as $img){
 			$fid = EshoportalUploadImage(CWD.'/modules/eshopportal/mediasrc/'.$img.'.jpg');
@@ -85,10 +66,25 @@ function EshopportalElementAppend($catid, $title, $imgs="", $desc='', $overfld =
 				array_push($afids, $fid);
 			}
 		}
-		if (count($afids)>0){
-			CatalogQuery::FotoAppend(Abricos::$db, $elid, $afids);
-		}
+		$p->fotos = $afids;
 	}
+	
+	$p->catid = $catid;
+	$p->tl = $title;
+
+	$elTypeId = 0;
+	$p->values = new stdClass();
+	$p->values->$elTypeId = new stdClass();
+	$opts = $p->values->$elTypeId;
+	$opts->art = rand(100000, 999999);
+	$opts->sklad = rand(0, 50);
+	$opts->price = rand (100, 10000)+rand (0, 99)*0.1;
+	$opts->desc = $desc;
+	
+	$elid = EShopManager::$instance->cManager->ElementSave(0, $p);
+	
+	if (empty($elid)){ return 0; }
+	
 	
 	return $elid;
 }
@@ -173,7 +169,7 @@ if (Ab_UpdateManager::$isCoreInstall){
 	 				</p>
 				");
 	
-				$catid = EshopportalCatalogAppend($pcatid, 'tvlcd', 'LCD TVы', "
+				$catid = EshopportalCatalogAppend($pcatid, 'tvlcd', 'LCD телевизоры', "
 					<p>
 						ЖК (жидко-кристалические) телевизоры  - это отличная передача звука и качества. 
 						Уже давно пора давно забыть об ЭЛТ телевизорах и купить телевизор жк. 
