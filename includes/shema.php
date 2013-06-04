@@ -92,7 +92,7 @@ function EshopportalElementAppend($catid, $title, $imgs="", $desc='', $overfld =
 $PH = array(
 	'ru' => array(
 		"template" => "eshoptp",
-		"sitename" => "Абрикос Store",
+		"sitename" => "Абрикос Шоп",
 		"sitetitle" => "современный интернет-магазин",
 			
 		"title" => "Интернет-магазин"
@@ -139,16 +139,17 @@ if (Ab_UpdateManager::$isCoreInstall){
 	$modEshop = Abricos::GetModule('eshop');
 	if (!empty($modEshop) && !empty($modFileManager)){
 		$m = new stdClass();
-		$m->nm = 'eshop';
-		$m->tl = $ph['title'];
-		$m->ord = $ord++;
-		$m->id = $manSitemap->MenuAppend($m);
-	
-		$p = new stdClass();
-		$p->mid = $m->id;
-		$p->nm = 'index';
-		$p->bd = '';
-		$manSitemap->PageAppend($p);
+		
+		$manSitemap->PageSave(array(
+			"menu" => array(
+				"tl" => $ph['title'],
+				"nm" => "eshop",
+				"ord" => $ord++
+			),
+			"page" => array(
+				"bd" => ""
+			)
+		));
 		
 		// Создание разделов
 		$modCatalog = Abricos::GetModule('catalog');
@@ -353,55 +354,52 @@ if (Ab_UpdateManager::$isCoreInstall){
 	}
 	
 	if (Abricos::$LNG == 'ru'){
-		$m = new stdClass();
-		$m->nm = 'contacts';
-		$m->tl = 'Контакты';
-		$m->ord = $ord++;
-		$m->id = $manSitemap->MenuAppend($m);
-		
-		$p = new stdClass();
-		$p->mid = $m->id;
-		$p->nm = 'index';
-		$p->bd = "
-			<h2>Контакты</h2>
-			
-			<p>
-				<i>Abricos Shop Ltd.</i>
-			</p>
-			
-			<p>101000, Россия, Москва, Красная площадь, дом 1</p>
-			
-			<p>
-				Тел.: 101-00-01<br />
-				Факс: 101-00-02
-			</p>
-		";
-		$manSitemap->PageAppend($p);
+		$manSitemap->PageSave(array(
+			"menu" => array(
+				"tl" => "Контакты",
+				"nm" => "contacts",
+				"ord" => $ord++
+			),
+			"page" => array(
+				"bd" => "
+					<h2>Контакты</h2>
+					
+					<p>
+						<i>Abricos Shop Ltd.</i>
+					</p>
+					
+					<p>101000, Россия, Москва, Красная площадь, дом 1</p>
+					
+					<p>
+						Тел.: 101-00-01<br />
+						Факс: 101-00-02
+					</p>
+				"
+			)
+		));
 	}else{
-		$m = new stdClass();
-		$m->nm = 'contacts';
-		$m->tl = 'Contacts';
-		$m->ord = $ord++;
-		$m->id = $manSitemap->MenuAppend($m);
-		
-		$p = new stdClass();
-		$p->mid = $m->id;
-		$p->nm = 'index';
-		$p->bd = "
-			<h2>Contacts</h2>
-			
-			<p>
-				<i>Abricos Shop Ltd.</i>
-			</p>
-			
-			<p>101000, Russia, Moscow, Red Square, house 1</p>
-			
-			<p>
-				Ph.: 101-00-01<br />
-				Fax: 101-00-02
-			</p>
-		";
-		$manSitemap->PageAppend($p);
+		$manSitemap->PageSave(array(
+			"menu" => array(
+				"tl" => "Contacts",
+				"nm" => "contacts",
+				"ord" => $ord++
+			),
+			"page" => array(
+				"bd" => "
+					<h2>Contacts</h2>
+					<p>
+						<i>Abricos Shop Ltd.</i>
+					</p>
+					
+					<p>101000, Russia, Moscow, Red Square, house 1</p>
+					
+					<p>
+						Ph.: 101-00-01<br />
+						Fax: 101-00-02
+					</p>
+				"
+			)
+		));
 	}
 	
 	Abricos::$user->id = 0;
