@@ -78,6 +78,9 @@ function EshopportalElementAppend($catid, $title, $imgs="", $desc='', $overfld =
 	$opts->sklad = rand(0, 50);
 	$opts->price = rand (100, 10000)+rand (0, 99)*0.1;
 	$opts->desc = $desc;
+	foreach($overfld as $fld => $value){
+		$opts->$fld = $value;
+	}
 	
 	$elid = EShopManager::$instance->cManager->ElementSave(0, $p);
 	
@@ -137,14 +140,13 @@ if (Ab_UpdateManager::$isCoreInstall){
 	
 	Abricos::$user->id = 1;
 	
-	// Установить шаблон gov
+	// Установить шаблон
 	Abricos::GetModule('sys')->GetManager();
 	$sysMan = Ab_CoreSystemManager::$instance;
 	$sysMan->DisableRoles();
 	$sysMan->SetTemplate($ph['template']);
 	$sysMan->SetSiteName($ph['sitename']);
 	$sysMan->SetSiteTitle($ph['sitetitle']);
-	
 	
 	// Страницы сайта
 	Abricos::GetModule('sitemap')->GetManager();
@@ -171,6 +173,16 @@ if (Ab_UpdateManager::$isCoreInstall){
 				"bd" => ""
 			)
 		));
+		
+		$cManager = EShopManager::$instance->cManager;
+		$elTypeList = $cManager->ElementTypeList();
+		$elTypeBase = $elTypeList->Get(0);
+		$optoinBrand = $elTypeBase->options->GetByName('brand');
+		
+		$optBrandLG = $cManager->OptionTableValueSave(0, $optoinBrand->id, 0, "LG");
+		$optBrandPhilips = $cManager->OptionTableValueSave(0, $optoinBrand->id, 0, "Philips");
+		$optBrandSamsung = $cManager->OptionTableValueSave(0, $optoinBrand->id, 0, "Samsung");
+		$optBrandToshiba = $cManager->OptionTableValueSave(0, $optoinBrand->id, 0, "Toshiba");
 		
 		// Создание разделов
 		$modCatalog = Abricos::GetModule('catalog');
@@ -221,19 +233,20 @@ if (Ab_UpdateManager::$isCoreInstall){
 						- DVI аудиовход (Mini Jack) x 1 ( для PC )					
 					</p>
 				");
-				EshopportalElementAppend($catid, "LCD TV LG 22LK330", "tvlcd003-1", '', array('new'=>1, 'hit'=>1));
-				EshopportalElementAppend($catid, "LCD TV Toshiba 32LV833RB", "tvlcd004-1");
-				EshopportalElementAppend($catid, "LCD TV LG 32LD320B", "tvlcd005-1");
-				EshopportalElementAppend($catid, "LCD TV Philips 56PFL9954H/12", "tvlcd006-1");
-				EshopportalElementAppend($catid, "LCD TV Samsung LE-37A686M1F", "tvlcd007-1");
-				EshopportalElementAppend($catid, "LCD TV Philips 47PFL4606H/60");
+				
+				EshopportalElementAppend($catid, "LCD TV LG 22LK330", "tvlcd003-1", '', array('new'=>1, 'hit'=>1, 'brand'=>$optBrandLG));
+				EshopportalElementAppend($catid, "LCD TV Toshiba 32LV833RB", "tvlcd004-1", '', array('brand'=>$optBrandToshiba));
+				EshopportalElementAppend($catid, "LCD TV LG 32LD320B", "tvlcd005-1", '', array('brand'=>$optBrandLG));
+				EshopportalElementAppend($catid, "LCD TV Philips 56PFL9954H/12", "tvlcd006-1", '', array('brand'=>$optBrandPhilips));
+				EshopportalElementAppend($catid, "LCD TV Samsung LE-37A686M1F", "tvlcd007-1", '', array('brand'=>$optBrandSamsung));
+				EshopportalElementAppend($catid, "LCD TV Philips 47PFL4606H/60", '', '', array('brand'=>$optBrandPhilips));
 					
 	
 				$catid = EshopportalCatalogAppend($pcatid, 'tvplz', 'Плазменные телевизоры');
 				EshopportalElementAppend($catid, "Плазменный телевизор Panasonic TX-PR42UT30");
 	
 				$catid = EshopportalCatalogAppend($pcatid, 'tvled', 'LED телевизоры');
-				EshopportalElementAppend($catid, "LED телевизоры Toshiba 26EL833R");
+				EshopportalElementAppend($catid, "LED телевизор Toshiba 26EL833R", '', '', array('brand'=>$optBrandToshiba));
 					
 				$catid = EshopportalCatalogAppend($pcatid, 'tvkinescope', 'Кинескопные телевизоры', "
 					<p>
