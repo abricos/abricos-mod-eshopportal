@@ -2,10 +2,8 @@
 /**
  * Схема таблиц данного модуля
  * 
- * @version $Id$
- * @package Abricos
- * @subpackage Eshopportal
- * @copyright Copyright (C) 2012 Abricos. All rights reserved.
+ * @package Eshop
+ * @subpackage EShopPortal
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * @author Alexander Kuzmin <roosit@abricos.org>
  */
@@ -95,14 +93,20 @@ $PH = array(
 		"sitename" => "Абрикос Шоп",
 		"sitetitle" => "современный интернет-магазин",
 			
-		"title" => "Интернет-магазин"
+		"title" => "Интернет-магазин",
+
+		"cart_delivery_nal" => 'Оплата наличными',
+		"cart_delivery_bank" => 'Безналичный рассчет'
 	),
 	'en' => array(
 		"template" => "eshoptp",
 		"sitename" => "Abricos Store",
 		"sitetitle" => "Online Store Platform",
 			
-		"title" => "Online Store"
+		"title" => "Online Store",
+
+		"cart_delivery_nal" => 'Оплата наличными',
+		"cart_delivery_bank" => 'Безналичный рассчет'
 	)
 );
 
@@ -111,6 +115,23 @@ $ph = $PH[Abricos::$LNG];
 
 if (Ab_UpdateManager::$isCoreInstall){ 
 	// разворачиваем коробку при инсталляции платформы
+	
+	// добавление настроек корзины
+	$modEShopCart = Abricos::GetModule('eshopcart');
+	if (!empty($modEShopCart)){
+		$modEShopCart->GetManager();
+		EShopCartManager::$instance->RoleDisable();
+	
+		$manCart = EShopCartManager::$instance;
+	
+		$d = new stdClass();
+		$d->tl = $ph['cart_delivery_nal'];
+		$manCart->PaymentSave($d);
+
+		$d = new stdClass();
+		$d->tl = $ph['cart_delivery_bank'];
+		$manCart->PaymentSave($d);
+	}
 	
 	$devMode = Abricos::$config['Misc']['develop_mode'];
 	
