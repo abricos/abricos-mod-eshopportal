@@ -154,8 +154,15 @@ if (Ab_UpdateManager::$isCoreInstall){
 	$manSitemap = SitemapManager::$instance;
 	$manSitemap->RolesDisable();
 	$manSitemap->MenuRemove(2);
-	
-	$ord = 10;
+
+    $db->query_write("
+        UPDATE ".$db->prefix."sys_page
+        SET template='eshoptp:home'
+        WHERE pageid=1
+        LIMIT 1
+	");
+
+    $ord = 10;
 	
 	$modFileManager = Abricos::GetModule('filemanager');
 	
